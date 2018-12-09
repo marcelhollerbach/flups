@@ -9,7 +9,6 @@ class Phab:
     self.phab.update_interfaces()
 
   def notify_harbourmaster(self, buildTargetPHID, success):
-    #FIXME check result
     self.phab.harbormaster.sendmessage(buildTargetPHID=buildTargetPHID, type=success)
 
   def apply_patch(self, id):
