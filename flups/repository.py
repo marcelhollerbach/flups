@@ -30,6 +30,7 @@ class Repo:
     self.cred = MyRemoteCallback(config)
 
   def lock_patch_work(self, id):
+    #FIXME add a try here to ensure we don't look while walking out
     self.lock.acquire(True)
     #first lets update master
     self.repo.remotes[self.config.repository_patch_origin].fetch()
@@ -52,4 +53,5 @@ class Repo:
       self.lock.release()
 
   def dispatch(self, id):
+    #FIXME also delete on the remote
     self.repo.branches.delete(id)

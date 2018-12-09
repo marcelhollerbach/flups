@@ -1,5 +1,3 @@
-import subprocess
-
 class Workflow:
   def __init__(self, name, targetBuildId, config, repository, phab):
     self.name = name
@@ -19,10 +17,5 @@ class Workflow:
   #message back to phabricator about success or failure
   def finalize(self, success):
     self.repository.dispatch(self.name)
-    result = ""
-    if success == True:
-      result = "success"
-    else:
-      result = "fail"
-    self.phab.notify_harbourmaster(self.targetBuildId, result)
+    self.phab.notify_harbourmaster(self.targetBuildId, success)
     pass

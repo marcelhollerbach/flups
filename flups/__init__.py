@@ -16,17 +16,22 @@ state = State(config, repository, phabricator)
 def flups():
     return "Current load of requests: "+str(len(state.map))
 
-@app.route("/run", methods=["POST"])
+@app.route("/run", methods=["GET"])
 def run():
-    id = request.form['buildRevision']
-    target_build_phid = request.form['buildTargetPHID']
+    id = request.args.get('buildRevision')
+    target_build_phid = request.args.get('buildTargetPHID')
     workflow = state.get_or_create(id, target_build_phid)
-    workflow.apply()
+    if workflow.apply() == False:
+        return ('Failed to apply patch', 400)
     return ('', 204)
 
-@app.route("/finish", methods=["POST"])
+@app.route("/finish", methods=["GET"])
 def finish():
-    id = request.form['buildRevision']
+    available_options = ['pass', 'fail', 'work']
+    id = request.args.get('buildRevision')
+    success = request.args.get('buildSuccess')
+    if not success in available_options:
+        return (''+success+' has to be either pass, fail or work', 400)
     workflow = state.dispatch(id)
-    workflow.finalize(False)
+    workflow.finalize(success)
     return ('', 204)

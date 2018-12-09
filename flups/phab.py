@@ -1,4 +1,5 @@
 from phabricator import Phabricator
+import subprocess
 
 class Phab:
   def __init__(self, config):
@@ -8,11 +9,10 @@ class Phab:
     self.phab.update_interfaces()
 
   def notify_harbourmaster(self, buildTargetPHID, success):
-    args = {}
-    args['buildTargetPHID'] = buildTargetPHID
-    args['type'] = "Fail"
-    self.phab.harbormaster.sendmessage(buildTargetPHID=buildTargetPHID, type="Fail")
+    #FIXME check result
+    self.phab.harbormaster.sendmessage(buildTargetPHID=buildTargetPHID, type=success)
 
   def apply_patch(self, id):
-    subprocess.call(["git", "-C", self.config.repository_path, "phab", "apply", id])
+    if subprocess.call(["git", "-C", self.config.repository_path, "phab", "apply", id]) != 0:
+      return False
     return True

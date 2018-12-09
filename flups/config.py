@@ -3,8 +3,8 @@ import configparser
 class Config:
   def __init__(self):
     config = configparser.ConfigParser()
-    config.read('example.ini')
-
+    assert len(config.read('config.ini')) != 0
+    #FIXME input validation
     self.repository_path = config["repository"]["path"]
     self.repository_patch_origin = config["repository"]["patch-origin"]
     self.repository_patch_destination = config["repository"]["patch-destination"]
