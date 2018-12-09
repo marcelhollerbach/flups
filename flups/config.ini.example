@@ -1,0 +1,13 @@
+[repository]
+path = ""
+patch-origin = ""
+patch-destination = ""
+
+[git-ssh-connection]
+pub-key = ""
+priv-key = ""
+passphrase = ""
+
+[phabricator]
+url = ""
+conduit-token = ""
