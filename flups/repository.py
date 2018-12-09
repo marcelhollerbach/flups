@@ -30,26 +30,29 @@ class Repo:
     self.cred = MyRemoteCallback(config)
 
   def lock_patch_work(self, id):
-    #FIXME add a try here to ensure we don't look while walking out
     self.lock.acquire(True)
-    #first lets update master
-    self.repo.remotes[self.config.repository_patch_origin].fetch()
-    #get the latest master
-    master_ref = self.repo.branches.remote[self.config.repository_patch_origin+'/master']
-    #In case the branch exists, delete it
-    if id in self.repo.branches:
-      self.repo.branches.delete(id)
-    #create a new branch
-    local = self.repo.branches.local.create(id, master_ref.peel())
-    #finally switch over
-    self.repo.checkout(local)
+    try:
+      #first lets update master
+      self.repo.remotes[self.config.repository_patch_origin].fetch()
+      #get the latest master
+      master_ref = self.repo.branches.remote[self.config.repository_patch_origin+'/master']
+      #In case the branch exists, delete it
+      if id in self.repo.branches:
+        self.repo.branches.delete(id)
+      #create a new branch
+      local = self.repo.branches.local.create(id, master_ref.peel())
+      #finally switch over
+      self.repo.checkout(local)
+    except Exception as e:
+      self.lock.release()
+      raise e
 
   def unlock_patch_work(self, id):
     try:
       self.repo.remotes[self.config.repository_patch_destination].push(["+refs/heads/"+id], callbacks=self.cred)
-    finally:
       master_ref = self.repo.branches.remote[self.config.repository_patch_origin+'/master']
       self.repo.checkout(master_ref)
+    finally:
       self.lock.release()
 
   def dispatch(self, id):
