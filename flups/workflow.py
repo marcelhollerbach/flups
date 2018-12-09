@@ -9,10 +9,8 @@ class Workflow:
   #apply the patch from phabricator to the git repository and publish it
   def apply(self):
     self.repository.lock_patch_work(self.name)
-    if self.phab.apply_patch(self.name) == False:
-      return False
+    self.phab.apply_patch(self.name)
     self.repository.unlock_patch_work(self.name)
-    return True
 
   #message back to phabricator about success or failure
   def finalize(self, success):

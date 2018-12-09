@@ -13,5 +13,4 @@ class Phab:
 
   def apply_patch(self, id):
     if subprocess.call(["git", "-C", self.config.repository_path, "phab", "apply", id]) != 0:
-      return False
-    return True
+      raise Exception("git phab apply call failed")

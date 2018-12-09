@@ -21,8 +21,7 @@ def run():
     id = request.args.get('buildRevision')
     target_build_phid = request.args.get('buildTargetPHID')
     workflow = state.get_or_create(id, target_build_phid)
-    if workflow.apply() == False:
-        return ('Failed to apply patch', 400)
+    workflow.apply()
     return ('', 204)
 
 @app.route("/finish", methods=["GET"])
