@@ -10,7 +10,7 @@ app = Flask(__name__)
 config = Config()
 repository = Repo(config)
 phabricator = Phab(config)
-state = State(config, repository, phabricator)
+state = State(repository, phabricator)
 
 @app.route("/")
 def flups():

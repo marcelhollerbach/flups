@@ -1,8 +1,7 @@
 class Workflow:
-  def __init__(self, name, config, repository, phab, state):
+  def __init__(self, name, repository, phab, state):
     self.name = name
     self.repository = repository
-    self.config = config
     self.phab = phab
     self.state = state
 

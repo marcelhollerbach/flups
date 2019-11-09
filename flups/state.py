@@ -2,12 +2,14 @@ from flups.workflow import Workflow
 from concurrent.futures import ThreadPoolExecutor
 
 def async_applying_of_workflow(workflow):
-  workflow.apply()
+  try:
+    workflow.apply()
+  except Exception as e:
+    workflow.finalize("fail")
 
 class State:
-  def __init__(self, config, repository, phab):
+  def __init__(self, repository, phab):
     self.map = {}
-    self.config = config
     self.repository = repository
     self.phab = phab
     #always keep that 1 here, more cannot work because we need to lock the repository
@@ -16,7 +18,7 @@ class State:
 
   def get_or_create(self, key):
     if not key in self.map:
-      self.map[key] = Workflow(key, self.config, self.repository, self.phab, self)
+      self.map[key] = Workflow(key, self.repository, self.phab, self)
     return self.map[key]
 
   def schedule_apply(self, key):
