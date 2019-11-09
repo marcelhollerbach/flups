@@ -14,22 +14,18 @@ state = State(config, repository, phabricator)
 
 @app.route("/")
 def flups():
-    return "Current load of requests: "+str(len(state.map))
+    return "Current load of requests: "+str(len(state.map))+"\n Currently: "+state.state_string
 
 @app.route("/run", methods=["GET"])
 def run():
-    id = request.args.get('buildRevision')
-    target_build_phid = request.args.get('buildTargetPHID')
-    workflow = state.get_or_create(id, target_build_phid)
-    #TODO run this async
-    workflow.apply()
+    key = request.args.get('buildRevision')
+    state.schedule_apply(key, target_build_phid)
     return ('', 204)
 
 @app.route("/finish", methods=["GET"])
 def finish():
     commit_hash = request.args.get('sha')
-    id = phabricator.get_id_from_commit_message(repository.fetch_commit_message(commit_hash))
-    workflow = state.dispatch(id)
-    print(request.args.get('state'))
-    workflow.finalize(request.args.get('state'))
+    state = request.args.get('state')
+    key = phabricator.get_id_from_commit_message(repository.fetch_commit_message(commit_hash))
+    state.schedule_phabnotify(key, state)
     return ('', 204)

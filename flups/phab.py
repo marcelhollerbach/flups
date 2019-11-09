@@ -14,12 +14,10 @@ class Phab:
     self.phab.harbormaster.sendmessage(buildTargetPHID=buildTargetPHID, type=success)
 
   def apply_patch(self, id):
-    print("ABCD")
     try:
       subprocess.check_output(["git", "-C", self.config.repository_path, "phab", "apply", id])
     except Exception as e:
       raise Exception("git phab application failed: "+e.output)
-    print("ABCDEFG")
 
   def get_id_from_commit_message(self, msg):
     revision_numbers = re.findall(r""+self.instance_string+"/D(\d+)", msg)
