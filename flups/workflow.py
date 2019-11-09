@@ -1,9 +1,8 @@
 class Workflow:
-  def __init__(self, name, targetBuildId, config, repository, phab, state):
+  def __init__(self, name, config, repository, phab, state):
     self.name = name
     self.repository = repository
     self.config = config
-    self.targetBuildId = targetBuildId
     self.phab = phab
     self.state = state
 
@@ -21,5 +20,5 @@ class Workflow:
   #message back to phabricator about success or failure
   def finalize(self, success):
     self.repository.dispatch(self.name)
-    self.phab.notify_harbourmaster(self.targetBuildId, success)
+    self.phab.notify_harbourmaster(self.name, success)
     pass

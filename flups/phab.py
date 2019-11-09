@@ -10,8 +10,10 @@ class Phab:
     self.phab.update_interfaces()
     self.instance_string = config.phabricator_revision_url
 
-  def notify_harbourmaster(self, buildTargetPHID, success):
-    self.phab.harbormaster.sendmessage(buildTargetPHID=buildTargetPHID, type=success)
+  def notify_harbourmaster(self, key, success):
+    key_number = re.findall(r"D(\d+)", key)
+    differntial = self.phab.differential.query(ids=key_number)
+    self.phab.harbormaster.sendmessage(buildTargetPHID=differntial[0]["phid"], type=success)
 
   def apply_patch(self, id):
     try:

@@ -19,13 +19,27 @@ def flups():
 @app.route("/run", methods=["GET"])
 def run():
     key = request.args.get('buildRevision')
-    state.schedule_apply(key, target_build_phid)
+    state.schedule_apply(key)
     return ('', 204)
 
 @app.route("/finish", methods=["GET"])
 def finish():
+    phab_state = ""
     commit_hash = request.args.get('sha')
-    state = request.args.get('state')
-    key = phabricator.get_id_from_commit_message(repository.fetch_commit_message(commit_hash))
-    state.schedule_phabnotify(key, state)
+    new_state = request.args.get('state')
+
+    if new_state == "success":
+        phab_state = "pass"
+    elif new_state == "failure":
+        phab_state = "fail"
+    elif new_state == "error":
+        phab_state = "fail"
+    elif new_state == "pending":
+        phab_state = ""
+    else:
+        raise Exception("not understood state "+phab_state)
+
+    if phab_state != "":
+        key = phabricator.get_id_from_commit_message(repository.fetch_commit_message(commit_hash))
+        state.schedule_phabnotify(key, new_state)
     return ('', 204)
