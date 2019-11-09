@@ -21,16 +21,15 @@ def run():
     id = request.args.get('buildRevision')
     target_build_phid = request.args.get('buildTargetPHID')
     workflow = state.get_or_create(id, target_build_phid)
+    #TODO run this async
     workflow.apply()
     return ('', 204)
 
 @app.route("/finish", methods=["GET"])
 def finish():
-    available_options = ['pass', 'fail', 'work']
-    id = request.args.get('buildRevision')
-    success = request.args.get('buildSuccess')
-    if not success in available_options:
-        return (''+success+' has to be either pass, fail or work', 400)
+    commit_hash = request.args.get('sha')
+    id = phabricator.get_id_from_commit_message(repository.fetch_commit_message(commit_hash))
     workflow = state.dispatch(id)
-    workflow.finalize(success)
+    print(request.args.get('state'))
+    workflow.finalize(request.args.get('state'))
     return ('', 204)

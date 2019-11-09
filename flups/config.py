@@ -12,4 +12,5 @@ class Config:
     self.ssh_privkey = config["git-ssh-connection"]["priv-key"]
     self.ssh_passphrase = config["git-ssh-connection"]["passphrase"]
     self.phabricator_url = config["phabricator"]["url"]
+    self.phabricator_revision_url = config["phabricator"]["revision-url"]
     self.phabricator_token = config["phabricator"]["conduit-token"]

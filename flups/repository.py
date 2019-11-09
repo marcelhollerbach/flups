@@ -58,3 +58,8 @@ class Repo:
   def dispatch(self, id):
     #FIXME also delete on the remote
     self.repo.branches.delete(id)
+
+  def fetch_commit_message(self, chash):
+    obj = self.repo.get(chash)
+    return obj.message
+
