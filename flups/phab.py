@@ -17,7 +17,7 @@ class Phab:
 
   def apply_patch(self, id):
     try:
-      subprocess.check_output(["git", "-C", self.config.repository_path, "phab", "apply", id])
+      subprocess.check_output(["arc", "patch", "--nobranch", id], cwd=self.config.repository_path)
     except subprocess.CalledProcessError as e:
       raise Exception("git phab application failed: "+e.output)
 
