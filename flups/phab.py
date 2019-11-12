@@ -18,7 +18,7 @@ class Phab:
   def apply_patch(self, id):
     try:
       subprocess.check_output(["git", "-C", self.config.repository_path, "phab", "apply", id])
-    except Exception as e:
+    except subprocess.CalledProcessError as e:
       raise Exception("git phab application failed: "+e.output)
 
   def get_id_from_commit_message(self, msg):
