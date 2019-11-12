@@ -27,8 +27,6 @@ class State:
     self.executor.submit(async_applying_of_workflow, workflow)
 
   def schedule_phabnotify(self, key, state):
-    if not key in self.map:
-      raise Exception("Revision "+key+" currently not found")
-    workflow = self.map[key]
+    workflow = self.get_or_create(key)
     del self.map[key]
     workflow.finalize(state)
